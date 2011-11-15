@@ -302,18 +302,26 @@ public class AIEngine {
        
         if (p1.canMove(row2, col2) && this.isMoveValid(p1, p2)>0 &&
             this.goAllTheWay(p1, row2, col2)){
-            this.p1 = board[row1][col1];
-            this.p2 = board[row2][col2];
+            //this.p1 = board[row1][col1];
+            //this.p2 = board[row2][col2];
 
-            Piece temp = board[row1][col1];
+            prevP2 = board[row2][col2];
+            board[row2][col2] = this.createPiece(p1);
+            board[row2][col2].Move(row2, col2);
+            //prevP2 = board[row1][col1];
+            board[row1][col1] = new Dull("NOCOLOR", row1, col1, ' ');
+            board[row2][col2].selected = false;
+            
+            /*Piece temp = board[row1][col1];
             board[row1][col1].Move(row2, col2);
-            //temp.Move(row2, col2);
+            temp.Move(row2, col2);
             prevP2 = board[row2][col2];
             //board[row1][col1] = board[row2][col2];
             board[row2][col2] = temp;
             board[row1][col1] = new Dull("NOCOLOR", row1, col1, ' ');
             //board[row1][col1] = prevP2;
             board[row2][col2].selected = false;
+            //p1 = new Dull("NOCOLOR", row1, col1, ' ');*/
             if (board[row2][col2].getRepresentation() == 'K') {
                 if (board[row2][col2].getColor() == "WHITE") {
                     this.WKing = ((King)board[row2][col2]);
@@ -337,8 +345,12 @@ public class AIEngine {
         
         if (p1.gRow() != p2.gRow() || p1.gCol() != p2.gCol()){
 
-            Piece temp = board[row1][col1];
-            board[row1][col1].Move(row2, col2);
+            board[row2][col2] = this.createPiece(p1);
+            board[row1][col1] = prevP2;
+            board[row2][col2].selected = false;
+            board[row2][col2].Move(row2, col2);
+            /*Piece temp = board[row1][col1];
+            //board[row1][col1].Move(row2, col2);
             //board[row1][col1] = board[row2][col2];
             board[row2][col2] = temp;
             board[row1][col1] = prevP2;
@@ -348,7 +360,8 @@ public class AIEngine {
             //[row2][col2] = temp;
             //board[row1][col1] = this.createPiece(this.prevP2);
             //board[row1][col1] = new Dull("NOCOLOR", row1, col1, ' ');
-            board[row2][col2].selected = false;
+            board[row2][col2].selected = false;*/
+
             if (board[row2][col2].getRepresentation() == 'K') {
                 if (board[row2][col2].getColor() == "WHITE") {
                     this.WKing = ((King)board[row2][col2]);
@@ -998,10 +1011,10 @@ public class AIEngine {
                                 boolean isStoppingCheck = this.isStoppingCheck(board[i][j], board[k][l]);
                                 //this.getBoard(board);
                                 if (!isCreatingCheck && isStoppingCheck) {
-                                    currentMove.rowone = board[i][j].gRow();
-                                    currentMove.rowtwo = i;
-                                    currentMove.colone = board[i][j].gCol();
-                                    currentMove.coltwo = j;
+                                    currentMove.rowone = i;
+                                    currentMove.rowtwo = k;
+                                    currentMove.colone = j;
+                                    currentMove.coltwo = l;
                                     currentMove.score = this.evaluate(i,j);
                                     moves.add(currentMove);
                                 }

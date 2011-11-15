@@ -113,7 +113,6 @@ public class Piece {
         else
             distance = Math.sqrt(Math.pow(Math.abs(this.row-p.row),2) + Math.pow(Math.abs(this.col-p.col),2));
         
-        System.out.println("Distance: "+distance);
         return distance;
     }
     

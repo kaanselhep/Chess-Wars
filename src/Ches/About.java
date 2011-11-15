@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 /**
  *
  * @author Kaan
+ * what up Kaan
  */
 public class About extends JFrame implements MouseListener {
     private BufferedImage boardImage;
@@ -63,7 +64,7 @@ public class About extends JFrame implements MouseListener {
         g.drawString("CHESS WARS", 15, 45);
         g.setColor(Color.BLACK);
         g.drawString("Chess Wars is", 15, 80);
-        g.drawString("Created by Artificial", 15, 95);
+        g.drawString("Created by Quantum", 15, 95);
         g.drawString("Minds(TM). It can only be", 15, 110);
         g.drawString("distributed and produced", 15, 125);
         g.drawString("by the company itself.", 15, 140);
@@ -73,7 +74,7 @@ public class About extends JFrame implements MouseListener {
         g.drawString("chess game.", 15, 200);
         g.drawString("Thank you for playing!", 15, 240);
         g.drawString("Please contact: ", 15, 270);
-        g.drawString("Artificial Minds for inquiries", 15, 285);
+        g.drawString("Quantum Minds for inquiries", 15, 285);
         g.drawString("Lead Design & Programming:", 15, 315);
         g.drawString("Kaan Ersan", 15, 330);
     }

@@ -76,8 +76,6 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
     public BufferStrategy strategy;
 
     JMenuBar bar;
-    private JTextArea textArea;
-    private JScrollPane chatHistoryScroll;
     private BufferedImage boardImage;
     private BufferedImage MoveAbleDarkTile;
     private BufferedImage MoveAbleLightTile;
@@ -86,10 +84,6 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
     private Image icon;
     private Image negIcon;
     private JPanel panel;
-    private JPanel chatPanel;
-    private JTextArea chatHistory;
-    private Dimension chatHistoryMaxSize;
-    private JTextField chatBox;
     
     public ChessFrame2() {
 
@@ -98,11 +92,7 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
         panel.setSize(20, 50);
         panel.setLocation(10, 550);
         panel.setOpaque(false);
-
-        /*chatPanel = new JPanel();
-        //chatPanel.setLayout(null);
-        chatPanel.setLocation(10, 500);*/
-        
+       
         //Set the cursor
         options = new Options();
         Toolkit tk = Toolkit.getDefaultToolkit();
@@ -125,31 +115,6 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.bar = new JMenuBar();      //Menu bar
-
-        /*chatHistoryMaxSize = new Dimension(30, 50);
-
-        chatHistory = new JTextArea(5, 20);
-        chatBox = new JTextField(10);
-
-        chatBox.setHorizontalAlignment(JTextField.LEFT);
-        textArea = new JTextArea("Hello World");
-        textArea.setLocation(5,570);
-        chatHistory.setSize(50, 40);
-        chatHistory.setEnabled(false);
-        chatHistory.setDisabledTextColor(Color.BLACK);
-        chatHistoryScroll = new JScrollPane(chatHistory);
-
-        chatHistory.setLocation(570, 900);
-        chatHistory.setMaximumSize(chatHistoryMaxSize);
-
-        chatBox.setSize(50, 40);
-        chatBox.setEditable(true);
-        chatBox.setLocation(570, 900);
-
-        chatPanel.add(chatHistory);
-        chatPanel.add(chatBox);
-        chatPanel.add(chatHistoryScroll);
-        panel.add(textArea);*/
 
         JMenu fileMenu = new JMenu("File");
         JMenu editMenu = new JMenu("Edit");
@@ -176,25 +141,6 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
         editMenu.add(Options);
         editMenu.add(flipBoard);
         helpMenu.add(About);
-
-
-        /*chatBox.addKeyListener(
-            new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER && chatBox.getText() != "\n") {
-                        String data = "";
-                        chatHistory.append(chatBox.getText() + "\n");
-                        chatBox.setText("");
-                    }
-                }
-            }
-        );
-
-        chatHistory.addCaretListener(new javax.swing.event.CaretListener() {
-            public void caretUpdate(javax.swing.event.CaretEvent evt) {
-                chatHistoryCaretUpdate(evt);
-            }
-        });*/
 
         NewGame.addActionListener(
             new ActionListener() {
@@ -601,13 +547,13 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
 
                             AI.getKing(WKing);
                             AI.getKing(BKing);
-                            //AI.getBoard(board);
+                            AI.getBoard(board);
 
                             isStoppingCheck = AI.isStoppingCheck(board[rowone][colone],board[k][l]);
 
                             AI.getKing(WKing);
                             AI.getKing(BKing);
-                            //AI.getBoard(board);
+                            AI.getBoard(board);
 
                             if (!isCreatingCheck && isStoppingCheck) {
                                 if(board[k][l].getColor() == attackingColor) {
@@ -871,10 +817,10 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
             if (validMove > 0 && goAllTheWay == true) {
                 //AI.getBoard(board);
                 isCreatingCheck = AI.isCreatingCheck(board[rowone][colone],board[rowtwo][coltwo]);
-                //AI.getBoard(board);
+                AI.getBoard(board);
                 isStoppingCheck = AI.isStoppingCheck(board[rowone][colone],board[rowtwo][coltwo]);
 
-                //AI.getBoard(board);
+                AI.getBoard(board);
 
                 if (validMove > 0 && goAllTheWay && !isCreatingCheck && isStoppingCheck) {
 
@@ -1034,12 +980,13 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
 
         while (Winner == false & pieceCounter >= 3) {
             
-            
+            //White's turn
             if (this.turnCounter % 2 == 1) {
                 this.AI.generateAllMoves("WHITE");
                 this.setMessage("White's Move" + ", Number of Possible Moves: " + (AI.getNumberOfMoves()));
-                        
+                
                 AI.getBoard(board);
+                AI.getKing(WKing);
                 //We're the server and it's our turn, change the icon to negative
                 if (options.gameType == 1 && turnCounter > 1 && !this.hasFocus() && !this.isActive()) {
                     this.setIconImage(negIcon);
@@ -1070,12 +1017,14 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
                 }
                 
             }
+            //Black's turn
             else {
                 this.AI.generateAllMoves("BLACK");
-                new AePlayWave("yes.wav").start();
+                //new AePlayWave("yes.wav").start();
                 this.setMessage("Black's Move" + ", Number of Possible Moves: " + (AI.getNumberOfMoves()));
 
                 AI.getBoard(board);
+                AI.getKing(BKing);
                 //We're the client and it's our turn, change icon to negative
                 if (options.gameType == 2 && !this.hasFocus() && !this.isActive()) {
                     this.setIconImage(negIcon);
@@ -1107,10 +1056,9 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
             }
             //First input
             while(mouseRow > 7 || mouseRow < 0 || mouseCol > 7 || mouseCol < 0){
-                //If we're playing single player, don't do anything
-                if (options.gameType == 0) {}
+
                 //If we're the server, just wait for manual input
-                else if (options.gameType == 1 && this.turnCounter%2 == 0) {
+                if (options.gameType == 1 && this.turnCounter%2 == 0) {
                     //Try receiving the clients first selection of a piece (1st input)
                     try {
                         data = options.server.receiveData();
@@ -1140,13 +1088,16 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
                         mouseCol = Integer.parseInt(data.substring(1, 2));
                     }
                 }
+                else if (options.gameType == 0){
+                   System.out.print("");
+                }
                 //don't do anything, just wait for input
             }
 
             //Set the row and col values with the input that was just received
             rowone = mouseRow;
             colone = mouseCol;
-
+            
             //if we're the server, send the data after getting manual input
             if (options.gameType == 1 && this.turnCounter%2 == 1) {
                 data = String.valueOf(mouseRow) + String.valueOf(mouseCol);
@@ -1167,10 +1118,8 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
 
                 //Second input
                 while (mouseRow>7 || mouseRow<0 || mouseCol>7 || mouseCol<0){
-                     //If we're playing single player
-                    if (options.gameType == 0) {}
                     //else if we're the server, just wait for manual input
-                    else if (options.gameType == 1 && this.turnCounter%2 == 0) {
+                    if (options.gameType == 1 && this.turnCounter%2 == 0) {
                         try {
                             data = options.server.receiveData();
                         } catch (IOException ex) {
@@ -1200,7 +1149,10 @@ public class ChessFrame2 extends JFrame implements KeyListener, MouseMotionListe
                             mouseCol = Integer.parseInt(data.substring(1, 2));
                         }
                     }
-
+                     //If we're playing single player
+                    else if (options.gameType == 0){
+                        System.out.print("");
+                    }
                     //don't do anything, just wait
                 }
                 rowtwo = mouseRow;
